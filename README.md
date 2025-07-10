@@ -1,215 +1,358 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cân Thông Minh ESP32</title>
+    <title>Hộp Quà Bí Ẩn</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            padding: 20px; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             min-height: 100vh;
-        }
-        .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-        .weight-display { 
-            text-align: center; 
-            font-size: 4em; 
-            margin: 30px 0;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .status { 
-            text-align: center; 
-            margin: 20px 0; 
-            font-size: 1.2em;
-        }
-        button { 
-            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-            color: white; 
-            border: none; 
-            padding: 15px 30px; 
-            font-size: 18px; 
-            border-radius: 50px;
-            cursor: pointer; 
-            margin: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        button:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        .history {
-            margin-top: 30px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-        }
-        .history-item {
             display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
-        .stable { color: #4ECDC4; }
-        .unstable { color: #FF6B6B; }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        .title {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.2); }
+            to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.4); }
+        }
+
+        .gift-box {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.1);
+        }
+
+        .box {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.5s ease;
+        }
+
+        .box::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #ff8a80, #ff5722);
+            border-radius: 15px;
+            z-index: -1;
+        }
+
+        .lid {
+            width: 200px;
+            height: 50px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: bottom;
+        }
+
+        .ribbon-v {
+            width: 20px;
+            height: 200px;
+            background: linear-gradient(to bottom, #ffd700, #ffb300);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .ribbon-h {
+            width: 200px;
+            height: 20px;
+            background: linear-gradient(to right, #ffd700, #ffb300);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .bow {
+            width: 60px;
+            height: 40px;
+            background: #ff1744;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50px 50px 0 0;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+        }
+
+        .bow::before,
+        .bow::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: #ff1744;
+            border-radius: 50%;
+            top: 5px;
+        }
+
+        .bow::before {
+            left: 5px;
+        }
+
+        .bow::after {
+            right: 5px;
+        }
+
+        .gift-box.opened .lid {
+            transform: rotateX(-180deg) translateY(-50px);
+        }
+
+        .gift-box.opened .bow {
+            opacity: 0;
+            transform: translateX(-50%) scale(0);
+        }
+
+        .surprise {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        .gift-box.opened .surprise {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translate(-50%, -50%) scale(1) translateY(0);
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(1) translateY(-30px);
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1) translateY(-15px);
+            }
+        }
+
+        .heart {
+            font-size: 4em;
+            color: #ff1744;
+            filter: drop-shadow(0 0 10px rgba(255, 23, 68, 0.5));
+        }
+
+        .message {
+            color: white;
+            font-size: 1.5em;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .gift-box.opened ~ .message {
+            opacity: 1;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #ffd700, #ffb300);
+            border-radius: 50%;
+            opacity: 0;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                opacity: 1;
+                transform: scale(0) translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1) translate(var(--x), var(--y));
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .instruction {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2em;
+            margin-top: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="text-align: center; margin-bottom: 40px;">🏠 CÂN THÔNG MINH ESP32</h1>
+        <h1 class="title">🎁 Hộp Quà Bí Ẩn 🎁</h1>
         
-        <div class="weight-display" id="weight">0.0 kg</div>
-        
-        <div class="status" id="status">Sẵn sàng</div>
-        
-        <div style="text-align: center;">
-            <button onclick="startWeigh()">🎯 Bắt đầu cân</button>
-            <button onclick="tare()">⚖️ Reset về 0</button>
-            <button onclick="loadHistory()">📊 Xem lịch sử</button>
+        <div class="gift-box" id="giftBox">
+            <div class="box">
+                <div class="ribbon-v"></div>
+                <div class="ribbon-h"></div>
+            </div>
+            <div class="lid"></div>
+            <div class="bow"></div>
+            <div class="surprise">
+                <div class="heart">💝</div>
+            </div>
+            <div class="particles" id="particles"></div>
         </div>
-        
-        <div class="history" id="history" style="display: none;">
-            <h3>📈 Lịch sử cân nặng</h3>
-            <div id="historyList"></div>
+
+        <div class="message" id="message">
+            Chúc mừng! Bạn đã mở được hộp quà! 🎉
         </div>
-        
-        <div style="margin-top: 30px; text-align: center;">
-            <h4>🔧 Hiệu chỉnh cân</h4>
-            <input type="number" id="knownWeight" placeholder="Nhập trọng lượng chuẩn (kg)" 
-                   style="padding: 10px; border-radius: 10px; border: none; margin: 10px;">
-            <br>
-            <button onclick="calibrate()">⚙️ Hiệu chỉnh</button>
+
+        <div class="instruction">
+            👆 Nhấn vào hộp quà để mở nó!
         </div>
+
+        <!-- Sparkles -->
+        <div class="sparkle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+        <div class="sparkle" style="top: 30%; left: 85%; animation-delay: 0.5s;"></div>
+        <div class="sparkle" style="top: 70%; left: 15%; animation-delay: 1s;"></div>
+        <div class="sparkle" style="top: 80%; left: 80%; animation-delay: 1.5s;"></div>
+        <div class="sparkle" style="top: 15%; left: 60%; animation-delay: 2s;"></div>
+        <div class="sparkle" style="top: 90%; left: 40%; animation-delay: 2.5s;"></div>
     </div>
 
     <script>
-        let isWeighing = false;
-        
-        function updateWeight() {
-            fetch('/api/weight')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('weight').innerText = data.weight.toFixed(1) + ' kg';
+        const giftBox = document.getElementById('giftBox');
+        const particles = document.getElementById('particles');
+        let isOpened = false;
+
+        giftBox.addEventListener('click', function() {
+            if (!isOpened) {
+                this.classList.add('opened');
+                isOpened = true;
+                createParticles();
                 
-                if (data.is_stable) {
-                    document.getElementById('status').innerHTML = '<span class="stable">✅ Ổn định</span>';
-                } else {
-                    document.getElementById('status').innerHTML = '<span class="unstable">⏳ Chưa ổn định</span>';
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi:', error);
-                document.getElementById('status').innerText = '❌ Lỗi kết nối';
-            });
-        }
-        
-        function startWeigh() {
-            if (isWeighing) return;
-            
-            isWeighing = true;
-            document.getElementById('status').innerText = '🔄 Đang cân...';
-            
-            fetch('/api/weigh', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
+                // Âm thanh mở hộp quà (simulation)
                 setTimeout(() => {
-                    isWeighing = false;
-                    document.getElementById('status').innerText = '✅ Hoàn thành';
-                }, 3000);
-            })
-            .catch(error => {
-                isWeighing = false;
-                document.getElementById('status').innerText = '❌ Lỗi';
-            });
-        }
-        
-        function tare() {
-            document.getElementById('status').innerText = '🔄 Đang reset...';
-            
-            fetch('/api/tare', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('status').innerText = '✅ Đã reset về 0';
-            })
-            .catch(error => {
-                document.getElementById('status').innerText = '❌ Lỗi reset';
-            });
-        }
-        
-        function loadHistory() {
-            const historyDiv = document.getElementById('history');
-            const historyList = document.getElementById('historyList');
-            
-            fetch('/api/history')
-            .then(response => response.json())
-            .then(data => {
-                historyList.innerHTML = '';
-                
-                if (data.history.length === 0) {
-                    historyList.innerHTML = '<p>Chưa có dữ liệu</p>';
-                } else {
-                    data.history.forEach(entry => {
-                        const date = new Date(entry.timestamp);
-                        const item = document.createElement('div');
-                        item.className = 'history-item';
-                        item.innerHTML = `
-                            <span>${entry.weight.toFixed(1)} kg</span>
-                            <span>${date.toLocaleString('vi-VN')}</span>
-                        `;
-                        historyList.appendChild(item);
-                    });
-                }
-                
-                historyDiv.style.display = historyDiv.style.display === 'none' ? 'block' : 'none';
-            })
-            .catch(error => {
-                console.error('Lỗi:', error);
-            });
-        }
-        
-        function calibrate() {
-            const knownWeight = document.getElementById('knownWeight').value;
-            if (!knownWeight) {
-                alert('Vui lòng nhập trọng lượng chuẩn');
-                return;
+                    document.querySelector('.instruction').style.display = 'none';
+                }, 500);
+            } else {
+                // Reset hộp quà
+                this.classList.remove('opened');
+                isOpened = false;
+                particles.innerHTML = '';
+                document.querySelector('.instruction').style.display = 'block';
             }
-            
-            if (confirm(`Đặt vật ${knownWeight}kg lên cân và nhấn OK để bắt đầu hiệu chỉnh`)) {
-                document.getElementById('status').innerText = '🔄 Đang hiệu chỉnh...';
+        });
+
+        function createParticles() {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
                 
-                fetch('/api/calibrate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `weight=${knownWeight}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('status').innerText = '✅ Hiệu chỉnh hoàn tất';
-                    alert('Hiệu chỉnh thành công! Hãy tháo vật chuẩn ra.');
-                })
-                .catch(error => {
-                    document.getElementById('status').innerText = '❌ Lỗi hiệu chỉnh';
-                });
+                const angle = (Math.PI * 2 * i) / 20;
+                const distance = 100 + Math.random() * 50;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--x', x + 'px');
+                particle.style.setProperty('--y', y + 'px');
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+                particle.style.animationDelay = Math.random() * 0.3 + 's';
+                
+                particles.appendChild(particle);
+                
+                // Xóa particle sau khi animation kết thúc
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 1000);
             }
         }
-        
-        // Cập nhật cân nặng mỗi giây
-        setInterval(updateWeight, 1000);
-        updateWeight(); // Gọi ngay lần đầu
+
+        // Tạo sparkles ngẫu nhiên
+        function createRandomSparkles() {
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(sparkle);
+            }
+        }
+
+        // Tạo sparkles khi trang load
+        window.addEventListener('load', createRandomSparkles);
     </script>
 </body>
 </html>
-  )";
-}
